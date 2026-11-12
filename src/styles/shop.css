@@ -1,0 +1,1076 @@
+/* ==========================================================================
+   Sortiment: Gutscheinkarte, Spiele-Cover, Produktkachel, Raster, Reihen,
+   Kategorieseite, Produktseite
+   ========================================================================== */
+
+/* -------- Gutscheinkarte: Format einer Bankkarte, Farbe der Marke -------- */
+
+.gcard {
+  --c: var(--ink);
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 85.6 / 54;
+  border-radius: 7.5% / 11.9%;
+  background: var(--c);
+  overflow: hidden;
+  container-type: inline-size;
+}
+
+/* feiner Lichtschein von oben links */
+.gcard::before,
+.cover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.26) 0%, rgba(255, 255, 255, 0) 46%), radial-gradient(120% 90% at 100% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0) 62%);
+  pointer-events: none;
+}
+
+/* Solange das offizielle Logo fehlt: der Markenname als Text in einer neutralen Kapsel */
+.gcard__name,
+.cover__name {
+  position: relative;
+  max-width: 86%;
+  padding: 0.34em 0.82em;
+  border-radius: 1.3em;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--ink);
+  font-size: 12px;
+  font-size: clamp(8px, 7.6cqw, 22px);
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* Sehr kleine Karten zeigen nur die Farbe, der Name steht dann daneben */
+@container (max-width: 62px) {
+  .gcard__name {
+    display: none;
+  }
+}
+
+@container (max-width: 46px) {
+  .cover__name,
+  .cover__platform {
+    display: none;
+  }
+}
+
+/* ---------------- Spiele-Cover im Hochformat (Platzhalter) --------------- */
+
+.cover {
+  --c: #16181d;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 9% / 6.75%;
+  background: var(--c);
+  overflow: hidden;
+  container-type: inline-size;
+}
+
+.cover__name {
+  font-size: clamp(8px, 9.5cqw, 22px);
+  border-radius: 1.1em;
+}
+
+.cover__platform {
+  position: absolute;
+  top: 7%;
+  left: 7%;
+  z-index: 1;
+  padding: 0.25em 0.6em;
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--ink);
+  font-size: clamp(9px, 8cqw, 14px);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* ------------------------------ Produktkachel ---------------------------- */
+
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 10px 10px 12px;
+  border-radius: var(--r-tile);
+  background: var(--surface);
+  /* Die Kachel sieht überall gleich aus, auch auf schwarzen Flächen */
+  color: var(--ink);
+  transition: transform 0.45s var(--ease), background-color 0.2s ease;
+}
+
+/* Fährt die Maus über eine Kachel, hebt sie sich leicht */
+@media (hover: hover) {
+  .tile:hover {
+    transform: translate3d(0, -4px, 0);
+    background: var(--surface-press);
+  }
+}
+
+.tile__link {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 18px;
+}
+
+/* Die ganze Kachel führt zum Produkt */
+.tile__link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r-tile);
+}
+
+.tile__link:focus-visible {
+  outline: none;
+}
+
+.tile__link:focus-visible::after {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.on-dark .tile__link:focus-visible::after {
+  outline-color: #fff;
+}
+
+.on-dark .tile :focus-visible {
+  outline-color: var(--ink);
+}
+
+.tile__media {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1 / 0.84;
+  padding: 0 9%;
+}
+
+.tile__media--game {
+  padding: 0;
+}
+
+/* Das Bild selbst: Es gleitet beim Öffnen des Produkts an seinen Platz */
+.tile__art {
+  display: grid;
+  width: 100%;
+}
+
+.tile__media--game .tile__art {
+  width: 58%;
+}
+
+.tile__body {
+  display: grid;
+  gap: 2px;
+  padding: 2px 6px 0;
+}
+
+.tile__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-3s);
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.tile__name {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  font-size: 15.5px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.22;
+  text-wrap: auto;
+}
+
+.tile__meta {
+  color: var(--text-3s);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.tile__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 46px;
+  margin-top: auto;
+  padding: 8px 0 0 6px;
+}
+
+.tile__price {
+  font-size: 15.5px;
+}
+
+.tile__price--none {
+  color: var(--text-3s);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.tile__soldout {
+  color: var(--text-2);
+  font-size: 13.5px;
+  font-weight: 650;
+}
+
+/* Kleiner runder Knopf für den Schnellkauf */
+.tile__quick {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  flex: none;
+  /* Tippfläche 44 px, sichtbar ist der Kreis mit 38 px */
+  width: 44px;
+  height: 44px;
+  margin: -3px -3px -3px 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.35s var(--ease);
+}
+
+.tile__quick::before {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.tile__quick svg {
+  position: relative;
+}
+
+.tile__quick:active {
+  transform: scale(0.9);
+  transition-duration: 0.12s;
+}
+
+/* Herz für die Merkliste in der oberen Ecke */
+.wish {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  /* Tippfläche 44 px, sichtbar ist der Kreis mit 36 px */
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform 0.35s var(--ease);
+}
+
+.wish::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.wish svg {
+  position: relative;
+}
+
+.wish:active {
+  transform: scale(0.88);
+  transition-duration: 0.12s;
+}
+
+.wish[aria-pressed="true"] svg {
+  fill: currentColor;
+  animation: pop 0.45s var(--ease);
+}
+
+.wish--lg {
+  top: 12px;
+  right: 12px;
+  width: 48px;
+  height: 48px;
+}
+
+.wish--lg::before {
+  inset: 0;
+  background: #fff;
+}
+
+/* --------------------------------- Raster -------------------------------- */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media (min-width: 600px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+}
+
+@media (min-width: 820px) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+/* Reihe zum Wischen. Nur Reihen mit Kacheln lassen sich seitlich bewegen. */
+.row {
+  display: flex;
+  gap: 10px;
+  margin-inline: calc(-1 * var(--gutter));
+  padding: 6px var(--gutter) 4px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.row::-webkit-scrollbar {
+  display: none;
+}
+
+.row > * {
+  flex: 0 0 clamp(150px, 43vw, 214px);
+  scroll-snap-align: start;
+}
+
+@media (min-width: 600px) {
+  .row {
+    gap: 14px;
+  }
+}
+
+.rowwrap {
+  position: relative;
+}
+
+/* Pfeile nur am Computer: schwebende runde Knöpfe am Rand der Reihe */
+.rownav {
+  display: none;
+}
+
+@media (hover: hover) and (min-width: 1024px) {
+  .rownav {
+    position: absolute;
+    top: 50%;
+    z-index: 3;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    margin-top: -24px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--ink);
+    box-shadow: var(--float);
+    cursor: pointer;
+    transition: transform 0.35s var(--ease);
+    animation: fade-in 0.3s ease both;
+  }
+
+  .rownav:active {
+    transform: scale(0.92);
+    transition-duration: 0.12s;
+  }
+
+  .rownav--prev {
+    left: -12px;
+  }
+
+  .rownav--prev svg {
+    transform: rotate(180deg);
+  }
+
+  .rownav--next {
+    right: -12px;
+  }
+}
+
+/* ------------------------------ Kategorieseite --------------------------- */
+
+.listing__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  margin: 24px 0 16px;
+}
+
+.listing__count {
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.listing__sort {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.listing__filters {
+  margin-bottom: 16px;
+}
+
+.listing__note {
+  margin-bottom: 16px;
+}
+
+.listing__more {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.empty {
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+  padding: 28px 24px;
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+
+.empty h2 {
+  font-size: clamp(22px, 1.4vw + 17px, 30px);
+}
+
+.empty p {
+  max-width: 54ch;
+  color: var(--text-2);
+}
+
+.empty__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+@media (min-width: 600px) {
+  .empty {
+    padding: 40px;
+  }
+}
+
+/* ------------------------- Kacheln für alle Kategorien ------------------- */
+
+.cats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media (min-width: 700px) {
+  .cats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .cats {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+.cat {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 164px;
+  padding: 14px 14px 16px;
+  border-radius: var(--r-tile);
+  background: var(--surface);
+  text-decoration: none;
+  /* Die kleinen Produktbilder enden an der Kante der Kachel */
+  overflow: hidden;
+  transition: transform 0.45s var(--ease), background-color 0.2s ease;
+}
+
+@media (hover: hover) {
+  .cat:hover {
+    transform: translate3d(0, -4px, 0);
+    background: var(--surface-press);
+  }
+}
+
+.cat__art {
+  display: flex;
+  align-items: center;
+  height: 76px;
+  margin-bottom: auto;
+  padding-left: 2px;
+}
+
+/* Drei Karten füllen die Breite der Kachel: 52 % + 24 % + 24 % */
+.cat__art > * {
+  flex: none;
+  width: 52%;
+  max-width: 104px;
+  margin-right: -28%;
+  transform: rotate(-6deg);
+}
+
+.cat__art > *:nth-child(2) {
+  transform: rotate(3deg) translateY(-3px);
+}
+
+.cat__art > *:nth-child(3) {
+  transform: rotate(10deg);
+}
+
+.cat__art .cover {
+  width: 30%;
+  max-width: 56px;
+  margin-right: -7%;
+}
+
+.cat__art .cover__platform {
+  display: none;
+}
+
+.cat__art .iconchip {
+  width: 48px;
+  height: 48px;
+  margin: 0;
+  transform: none;
+}
+
+.iconchip {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.cat__name {
+  margin-top: 16px;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+.cat__count {
+  margin-top: 3px;
+  color: var(--text-3s);
+  font-size: 13.5px;
+}
+
+.cat__blurb {
+  display: none;
+  margin-top: 8px;
+  color: var(--text-2);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.cats--detail .cat {
+  min-height: 210px;
+}
+
+.cats--detail .cat__blurb {
+  display: block;
+}
+
+@media (min-width: 1024px) {
+  .cat {
+    min-height: 188px;
+    padding: 18px 18px 20px;
+  }
+
+  .cat__name {
+    font-size: 19px;
+  }
+}
+
+/* -------------------------------- Produktseite --------------------------- */
+
+.pdp {
+  display: grid;
+  gap: 20px;
+}
+
+@media (min-width: 900px) {
+  .pdp {
+    grid-template-columns: minmax(0, 1.04fr) minmax(0, 1fr);
+    gap: 56px;
+    align-items: start;
+  }
+}
+
+@media (min-width: 1200px) {
+  .pdp {
+    gap: 80px;
+  }
+}
+
+.pdp__media {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1 / 0.58;
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+@media (min-width: 900px) {
+  .pdp__media {
+    position: sticky;
+    top: calc(var(--header-h) + 44px);
+    aspect-ratio: 1 / 0.86;
+    border-radius: var(--r-xl);
+  }
+}
+
+.pdp__art {
+  display: grid;
+  width: 58%;
+  view-transition-name: product-art;
+  /* Das Produktbild schwebt sehr sanft */
+  animation: float 7s ease-in-out infinite alternate;
+}
+
+.pdp__art--game {
+  width: 32%;
+}
+
+@media (min-width: 900px) {
+  .pdp__art--game {
+    width: 42%;
+  }
+}
+
+@keyframes float {
+  from {
+    transform: translate3d(0, -5px, 0);
+  }
+  to {
+    transform: translate3d(0, 6px, 0);
+  }
+}
+
+.pdp__title {
+  font-size: clamp(36px, 3.6vw + 22px, 68px);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+
+.pdp__sub {
+  margin-top: 10px;
+  color: var(--text-2);
+}
+
+/* Wann kommt es? Steht direkt unter dem Namen, ohne Scrollen sichtbar */
+.pdp__ship {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  margin-top: 12px;
+  padding: 0 14px 0 11px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.pdp__group {
+  margin-top: 24px;
+}
+
+.pdp__label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+/* Betragswahl als Raster aus Kapseln */
+.amounts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 24px 0 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.amounts legend {
+  padding: 0;
+}
+
+.amount {
+  position: relative;
+  display: grid;
+  gap: 1px;
+  align-content: center;
+  min-height: 60px;
+  padding: 8px 20px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  cursor: pointer;
+  transition: background-color 0.25s ease, color 0.25s ease, transform 0.35s var(--ease);
+}
+
+.amount:active {
+  transform: scale(0.975);
+  transition-duration: 0.12s;
+}
+
+.amount input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.amount__value {
+  font-size: 16px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}
+
+.amount__price {
+  color: var(--text-3s);
+  font-size: 13.5px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.25;
+  transition: color 0.25s ease;
+}
+
+/* Die gewählte Kapsel ist schwarz */
+.amount:has(input:checked) {
+  background: var(--ink);
+  color: #fff;
+}
+
+.amount:has(input:checked) .amount__price {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.amount:has(input:focus-visible) {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.amount:has(input:disabled) {
+  cursor: not-allowed;
+}
+
+.amount:has(input:disabled) .amount__value {
+  color: var(--text-3s);
+}
+
+@media (hover: hover) {
+  .amount:not(:has(input:checked)):not(:has(input:disabled)):hover {
+    background: var(--surface-press);
+  }
+}
+
+.pdp__rowline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.pdp__rowline strong {
+  display: block;
+  color: var(--ink);
+  font-size: 15.5px;
+  font-weight: 650;
+}
+
+.pdp__rowline > span:first-child > span {
+  color: var(--text-2);
+  font-size: 14px;
+}
+
+label.pdp__rowline {
+  cursor: pointer;
+}
+
+.giftfields {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+  animation: rise-in 0.45s var(--ease) both;
+}
+
+/* Kaufbereich */
+.buybox {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+  padding: 18px;
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+
+@media (min-width: 600px) {
+  .buybox {
+    padding: 24px;
+  }
+}
+
+.buybox__total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.buybox__total > span {
+  color: var(--text-2);
+  font-size: 14.5px;
+}
+
+/* Beim Wechsel des Betrags springt der Preis nicht, er blendet weich um */
+.swap {
+  display: inline-block;
+  animation: swap 0.3s ease both;
+}
+
+@keyframes swap {
+  from {
+    opacity: 0;
+  }
+}
+
+.buybox__price {
+  font-size: 28px;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+}
+
+.buybox__or {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-3s);
+  font-size: 13.5px;
+}
+
+.buybox__or::before,
+.buybox__or::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(11, 11, 15, 0.1);
+}
+
+.quickpay {
+  display: grid;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: var(--r-md);
+  background: #fff;
+  color: var(--text-2);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.quickpay strong {
+  color: var(--ink);
+  font-size: 14.5px;
+  font-weight: 650;
+}
+
+.pdp__pay {
+  margin-top: 16px;
+}
+
+/* Eckdaten als kleine graue Kacheln mit Symbol */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.fact {
+  display: grid;
+  gap: 2px;
+  align-content: start;
+  padding: 14px 16px;
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+
+.fact dt {
+  display: grid;
+  gap: 10px;
+  color: var(--text-3s);
+  font-size: 13px;
+}
+
+.fact dt svg {
+  color: var(--ink);
+}
+
+.fact dd {
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+}
+
+/* Reiter: Beschreibung, Einlösen, Hinweise */
+.tabs {
+  margin-top: 32px;
+}
+
+.tabs__list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tabs__panel {
+  max-width: 62ch;
+  margin-top: 16px;
+  color: var(--text-2);
+  animation: rise-in 0.4s var(--ease) both;
+}
+
+.tabs__panel p + p,
+.tabs__panel ol + p {
+  margin-top: 10px;
+}
+
+.tabs__panel ol {
+  display: grid;
+  gap: 8px;
+  counter-reset: step;
+}
+
+.tabs__panel ol li {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 10px;
+  align-items: start;
+  counter-increment: step;
+  line-height: 28px;
+}
+
+.tabs__panel ol li::before {
+  content: counter(step);
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Kaufleiste am Handy: Milchglas, links der Gesamtpreis, rechts „Jetzt kaufen“ */
+.buybar {
+  position: fixed;
+  left: 10px;
+  right: 10px;
+  bottom: calc(10px + env(safe-area-inset-bottom));
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 68px;
+  padding: 0 9px 0 22px;
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.84);
+  -webkit-backdrop-filter: blur(22px) saturate(1.7);
+  backdrop-filter: blur(22px) saturate(1.7);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.8), var(--float);
+}
+
+.buybar__sum {
+  display: grid;
+  line-height: 1.2;
+  min-width: 0;
+}
+
+.buybar__sum > span {
+  color: var(--text-2);
+  font-size: 12.5px;
+}
+
+.buybar__sum strong {
+  font-size: 19px;
+  letter-spacing: -0.03em;
+}
+
+@media (min-width: 900px) {
+  .buybar {
+    display: none;
+  }
+}
+
+/* Platz für die Kaufleiste, damit sie die Fußzeile nicht verdeckt */
+@media (max-width: 899px) {
+  body:has(.buybar) .footer {
+    padding-bottom: calc(104px + env(safe-area-inset-bottom));
+  }
+}
